@@ -79,6 +79,13 @@
             <version>${roo.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Bean Info -->
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.addon.beaninfo</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
 		<!-- Other modules (if any) -->
 	</dependencies>
 	<build>

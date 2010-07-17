@@ -13,7 +13,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<roo.version>1.1.0.M1</roo.version>
+		<roo.version>1.1.0.M2</roo.version>
 		<junit.version>3.8.1</junit.version>
 	</properties>
 

@@ -22,7 +22,6 @@ import org.springframework.roo.metadata.MetadataService;
 import org.springframework.roo.model.JavaPackage;
 import org.springframework.roo.model.JavaSymbolName;
 import org.springframework.roo.model.JavaType;
-import org.springframework.roo.process.manager.FileManager;
 import org.springframework.roo.project.Dependency;
 import org.springframework.roo.project.Path;
 import org.springframework.roo.project.PathResolver;
@@ -90,8 +89,7 @@ public class TestDataBuilderOperationsImpl implements TestDataBuilderOperations 
         JavaPackage javaPackage = clazz.getPackage();
         
         String className = clazz.getSimpleTypeName();
-        
-        
+               
         JavaType tdbJavaType = new JavaType(javaPackage.getFullyQualifiedPackageName() + 
                 '.' + className + BUILDER_POSTFIX);
         
