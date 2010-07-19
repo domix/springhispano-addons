@@ -1,5 +1,8 @@
 package org.springhispano.roo.addon.tdb;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
@@ -19,6 +22,8 @@ import org.springframework.roo.project.Path;
 @Component
 @Service
 public class TestDataBuilderMetadataProvider extends AbstractItdMetadataProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(TestDataBuilderMetadataProvider.class.getName());
 
     /**
      * Llamado al activar el componente
@@ -26,8 +31,15 @@ public class TestDataBuilderMetadataProvider extends AbstractItdMetadataProvider
      * @param context
      */
     protected void activate(ComponentContext context) {
+        // Dependencia entre MID:org.springframework.roo.classpath.PhysicalTypeIdentifier y 
+        // MID:org.springhispano.roo.addon.tdb.TestDataBuilderMetadata
+        // con esto se logra hacer que cuando exista un cambio en los metadatos fisicos
+        // de la clase Test Data Builder se notifique a los metadatos del Test Data Builder
         metadataDependencyRegistry.registerDependency(
                 PhysicalTypeIdentifier.getMetadataIdentiferType(), getProvidesType());
+        
+        // Tambien cuando se encuentre una clase anotada con RooTestDataBuilder se notificara
+        // a los metadatos del Test Data Builder
         addMetadataTrigger(new JavaType(RooTestDataBuilder.class.getName()));
     }
 
@@ -82,9 +94,10 @@ public class TestDataBuilderMetadataProvider extends AbstractItdMetadataProvider
         }
 
         // Obtener info de la clase a la cual se le va a crear el TDB
-        JavaType classToTdb = annotationValues.getClazz();
-        Path path = Path.SRC_MAIN_JAVA;
-        String physicalTypeIdentifier = PhysicalTypeIdentifier.createIdentifier(classToTdb, path);
+        JavaType classToTdbType = annotationValues.getClazz();
+        Path classToTdbPath = Path.SRC_MAIN_JAVA;
+        String physicalTypeIdentifier = PhysicalTypeIdentifier.createIdentifier(
+                classToTdbType, classToTdbPath);
         // Con el identificador ya creado, se puede obtener los metadatos
         PhysicalTypeMetadata physicalTypeMetadata = (PhysicalTypeMetadata) metadataService
                 .get(physicalTypeIdentifier);
@@ -93,6 +106,14 @@ public class TestDataBuilderMetadataProvider extends AbstractItdMetadataProvider
         if (physicalTypeMetadata == null) {
             return null;
         }
+        
+        // Para que cuando exista un cambio en los metadatos fisicos de la clase original 
+        // se notifique a los metadatos del Test Data Builder
+        // NOTE: Este log al ser INFO se imprime en verde
+        //LOGGER.log(Level.INFO, "Registrando dependencia entre [" + 
+        //        physicalTypeIdentifier + "] y [" + metadataIdentificationString + ']');        
+        metadataDependencyRegistry.registerDependency(
+                physicalTypeIdentifier, metadataIdentificationString);
 
         return new TestDataBuilderMetadata(metadataIdentificationString, aspectName,
                 governorPhysicalTypeMetadata, physicalTypeMetadata);
