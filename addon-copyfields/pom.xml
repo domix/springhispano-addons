@@ -8,15 +8,15 @@
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 	<groupId>org.springhispano.roo.addon</groupId>
-	<artifactId>org.springhispano.roo.addon.tdb</artifactId>
+	<artifactId>org.springhispano.roo.addon.copyfields</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1.0-SNAPSHOT</version>
-	<name>SpringHispano.org - Test Data Builder Addon</name>
+	<name>SpringHispano.org - Copy Fields Addon</name>
 	<description>
-	    Addon para generar una clase que aplique el patron Test Data Builer para el
-	    POJO que se especifique
+	    Addon para generar un metodo que copia los datos de los campos de una entidad del
+	    mismo tipo
 	</description>
-	
+
 	<dependencies>
 		<!-- OSGi -->
 		<dependency>
@@ -74,18 +74,11 @@
 		</dependency>
 		<!-- JavaType -->
 		<dependency>
-            <groupId>org.springframework.roo</groupId>
-            <artifactId>org.springframework.roo.classpath</artifactId>
-            <version>${roo.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Bean Info -->
-        <dependency>
-            <groupId>org.springframework.roo</groupId>
-            <artifactId>org.springframework.roo.addon.beaninfo</artifactId>
-            <version>${roo.version}</version>
-            <type>bundle</type>
-        </dependency>
+			<groupId>org.springframework.roo</groupId>
+			<artifactId>org.springframework.roo.classpath</artifactId>
+			<version>${roo.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- Other modules (if any) -->
 	</dependencies>
 	<build>
@@ -223,9 +216,7 @@
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
-					<!--
-						WTP is not required <wtpversion>2.0</wtpversion>
-					-->
+					<!-- WTP is not required <wtpversion>2.0</wtpversion> -->
 				</configuration>
 			</plugin>
 			<plugin>

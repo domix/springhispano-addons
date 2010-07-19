@@ -1,0 +1,1 @@
+@set ROO_ADDON_CLASSPATH_FILE="D:\Abaddon\Projects\SpringHispano\Code\springhispano-addons\addon-copyfields\target\roo_classpath.txt"

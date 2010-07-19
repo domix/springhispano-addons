@@ -68,6 +68,7 @@
 		<module>anotaciones</module>
 		<module>addon-tdb</module>
 		<module>addon-auditablefields</module>
+		<module>addon-copyfields</module>
 	</modules>
 
 	<build>
