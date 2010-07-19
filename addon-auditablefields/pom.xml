@@ -7,16 +7,16 @@
 		<groupId>org.springhispano.roo.addon</groupId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>org.springhispano.roo.addon.tdb</groupId>
-	<artifactId>org.springhispano.roo.addon.tdb</artifactId>
+	<groupId>org.springhispano.roo.addon</groupId>
+	<artifactId>org.springhispano.roo.addon.auditablefields</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1.0-SNAPSHOT</version>
-	<name>SpringHispano.org - Test Data Builder Addon</name>
+	<name>SpringHispano.org - Auditable Fields</name>
 	<description>
-	    Addon para generar una clase que aplique el patron Test Data Builer para el
-	    POJO que se especifique
+	    Addon para generar los campos de auditoria: fecha de creacion/modificacion y usuarios de
+	    creacion/modificacion
 	</description>
-	
+
 	<dependencies>
 		<!-- OSGi -->
 		<dependency>
@@ -74,18 +74,11 @@
 		</dependency>
 		<!-- JavaType -->
 		<dependency>
-            <groupId>org.springframework.roo</groupId>
-            <artifactId>org.springframework.roo.classpath</artifactId>
-            <version>${roo.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Bean Info -->
-        <dependency>
-            <groupId>org.springframework.roo</groupId>
-            <artifactId>org.springframework.roo.addon.beaninfo</artifactId>
-            <version>${roo.version}</version>
-            <type>bundle</type>
-        </dependency>
+			<groupId>org.springframework.roo</groupId>
+			<artifactId>org.springframework.roo.classpath</artifactId>
+			<version>${roo.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- Other modules (if any) -->
 	</dependencies>
 	<build>
@@ -223,9 +216,7 @@
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
-					<!--
-						WTP is not required <wtpversion>2.0</wtpversion>
-					-->
+					<!-- WTP is not required <wtpversion>2.0</wtpversion> -->
 				</configuration>
 			</plugin>
 			<plugin>

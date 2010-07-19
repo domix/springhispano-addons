@@ -1,0 +1,2 @@
+// Spring Roo 1.1.0.M2 [rev 0b3543e] log opened at 2010-07-18 22:03:16
+addon create advanced --topLevelPackage org.springhispando.roo.addon.auditablefields

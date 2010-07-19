@@ -5,6 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Anotacion que dispara la generacion del Test Data Builder.
+ * 
+ * @author Rafael Antonio Guti&eacute;rrez Turullols
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface RooTestDataBuilder {
