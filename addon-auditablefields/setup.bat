@@ -1,1 +1,1 @@
-@set ROO_ADDON_CLASSPATH_FILE="/Volumes/AbaddonData/Abaddon/Projects/SpringHispano/Code/springhispano-addons/addon-auditablefields/target\roo_classpath.txt"
+@set ROO_ADDON_CLASSPATH_FILE="D:\Abaddon\Projects\SpringHispano\Code\springhispano-addons\addon-auditablefields\target\roo_classpath.txt"
