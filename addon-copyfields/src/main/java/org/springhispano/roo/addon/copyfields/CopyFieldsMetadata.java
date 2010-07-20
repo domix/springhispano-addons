@@ -32,6 +32,13 @@ public class CopyFieldsMetadata extends AbstractItdTypeDetailsProvidingMetadataI
     private static final String PROVIDES_TYPE = MetadataIdentificationUtils
             .create(PROVIDES_TYPE_STRING);
 
+    /**
+     * Constructor que crea el ITD del metadato
+     * @param identifier
+     * @param aspectName
+     * @param governorPhysicalTypeMetadata
+     * @param methodName
+     */
     public CopyFieldsMetadata(String identifier, JavaType aspectName,
             PhysicalTypeMetadata governorPhysicalTypeMetadata, String methodName) {
         super(identifier, aspectName, governorPhysicalTypeMetadata);
@@ -46,13 +53,21 @@ public class CopyFieldsMetadata extends AbstractItdTypeDetailsProvidingMetadataI
             methodName = "copyFields";
         }
 
-        builder.addMethod(createCopyFieldsMethod(methodName));
+        // Si no hay campos, no se genera nada
+        if (this.governorTypeDetails.getDeclaredFields().size() > 0) {
+            builder.addMethod(createCopyFieldsMethod(methodName));
+        }
         // NOTE: no sera bueno tambien generar el metodo clone e implementar la interfaz?
 
         // Create a representation of the desired output ITD
         itdTypeDetails = builder.build();
     }
 
+    /**
+     * Genera el metodo para copiar los campos
+     * @param name Nombre que va a tener el metodo
+     * @return Los metadatos del metodo
+     */
     private MethodMetadata createCopyFieldsMethod(String name) {
         JavaSymbolName methodName = new JavaSymbolName(name);
 
@@ -88,11 +103,23 @@ public class CopyFieldsMetadata extends AbstractItdTypeDetailsProvidingMetadataI
                 parameters, parameterNames, annotations, throwsTypes, body.getOutput());
     }
 
+    /**
+     * Construye el nombre del metodo a partir del nombre del campo
+     * @param fieldName Nombre del campo
+     * @return El nombre del metodo
+     */
     private String buildMethodName(String fieldName) {
         return Character.toUpperCase(fieldName.charAt(0))
                 + fieldName.substring(1, fieldName.length());
     }
 
+    /**
+     * Verifica si el metodo existe con ese nombre y con los parametros en la clase a la cual
+     * se le esta generando el ITD
+     * @param methodName Nombre del metodo
+     * @param paramTypes Lista de tipos que recibe como parametros el metodo
+     * @return null si no existe el metodo, los metadatos del metadato de lo contrario
+     */
     private MethodMetadata methodExists(JavaSymbolName methodName,
             List<AnnotatedJavaType> paramTypes) {
         // We have no access to method parameter information, so we scan by name

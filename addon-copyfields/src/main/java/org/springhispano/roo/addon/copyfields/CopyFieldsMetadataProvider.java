@@ -20,18 +20,29 @@ import org.springframework.roo.project.Path;
 @Service
 public final class CopyFieldsMetadataProvider extends AbstractItdMetadataProvider {
 
+    /**
+     * Activa el componente
+     * @param context Contexto
+     */
     protected void activate(ComponentContext context) {
         metadataDependencyRegistry.registerDependency(
                 PhysicalTypeIdentifier.getMetadataIdentiferType(), getProvidesType());
         addMetadataTrigger(new JavaType(RooCopyFields.class.getName()));
     }
 
+    /**
+     * Desactiva el componente
+     * @param context Contexto
+     */
     protected void deactivate(ComponentContext context) {
         metadataDependencyRegistry.deregisterDependency(
                 PhysicalTypeIdentifier.getMetadataIdentiferType(), getProvidesType());
         removeMetadataTrigger(new JavaType(RooCopyFields.class.getName()));
     }
 
+    /**
+     * Provee el metadata.
+     */
     protected ItdTypeDetailsProvidingMetadataItem getMetadata(String metadataIdentificationString,
             JavaType aspectName, PhysicalTypeMetadata governorPhysicalTypeMetadata,
             String itdFilename) {
@@ -45,10 +56,17 @@ public final class CopyFieldsMetadataProvider extends AbstractItdMetadataProvide
                 governorPhysicalTypeMetadata, annotationValues.getMethodName());
     }
 
+    /**
+     * @return El Sufijo unico para el ITD
+     */
     public String getItdUniquenessFilenameSuffix() {
         return "CopyFields";
     }
 
+    /**
+     * @return El identificador de los metadatos fisicos de la clase a la cual 
+     * se le esta generando el ITD
+     */
     protected String getGovernorPhysicalTypeIdentifier(String metadataIdentificationString) {
         JavaType javaType = CopyFieldsMetadata.getJavaType(metadataIdentificationString);
         Path path = CopyFieldsMetadata.getPath(metadataIdentificationString);
@@ -56,10 +74,18 @@ public final class CopyFieldsMetadataProvider extends AbstractItdMetadataProvide
         return physicalTypeIdentifier;
     }
 
+    /**
+     * @param javaType
+     * @param path
+     * @returnEl Identificador del tipo que recibe
+     */
     protected String createLocalIdentifier(JavaType javaType, Path path) {
         return CopyFieldsMetadata.createIdentifier(javaType, path);
     }
 
+    /**
+     * El identificador de los metadatos de este ITD
+     */
     public String getProvidesType() {
         return CopyFieldsMetadata.getMetadataIdentiferType();
     }
