@@ -214,25 +214,25 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
             } else if (field.getFieldType().equals(JavaType.BOOLEAN_PRIMITIVE)) {
                 initializer = "true";
             } else if (field.getFieldType().equals(JavaType.INT_OBJECT)) {
-                initializer = "new Integer(index)";
+                initializer = "new Integer(1)";
             } else if (field.getFieldType().equals(JavaType.INT_PRIMITIVE)) {
-                initializer = "new Integer(index)"; // Auto-boxed
+                initializer = "new Integer(1)"; // Auto-boxed
             } else if (field.getFieldType().equals(JavaType.DOUBLE_OBJECT)) {
-                initializer = "new Integer(index).doubleValue()"; // Auto-boxed
+                initializer = "new Integer(1).doubleValue()"; // Auto-boxed
             } else if (field.getFieldType().equals(JavaType.DOUBLE_PRIMITIVE)) {
-                initializer = "new Integer(index).doubleValue()";
+                initializer = "new Integer(1).doubleValue()";
             } else if (field.getFieldType().equals(JavaType.FLOAT_OBJECT)) {
-                initializer = "new Integer(index).floatValue()"; // Auto-boxed
+                initializer = "new Integer(1).floatValue()"; // Auto-boxed
             } else if (field.getFieldType().equals(JavaType.FLOAT_PRIMITIVE)) {
-                initializer = "new Integer(index).floatValue()";
+                initializer = "new Integer(1).floatValue()";
             } else if (field.getFieldType().equals(JavaType.LONG_OBJECT)) {
-                initializer = "new Integer(index).longValue()"; // Auto-boxed
+                initializer = "new Integer(1).longValue()"; // Auto-boxed
             } else if (field.getFieldType().equals(JavaType.LONG_PRIMITIVE)) {
-                initializer = "new Integer(index).longValue()";
+                initializer = "new Integer(1).longValue()";
             } else if (field.getFieldType().equals(JavaType.SHORT_OBJECT)) {
-                initializer = "new Integer(index).shortValue()"; // Auto-boxed
+                initializer = "new Integer(1).shortValue()"; // Auto-boxed
             } else if (field.getFieldType().equals(JavaType.SHORT_PRIMITIVE)) {
-                initializer = "new Integer(index).shortValue()";
+                initializer = "new Integer(1).shortValue()";
             }
             // TODO: Todavia tengo que entender que esta haciendo aqui
             /*
