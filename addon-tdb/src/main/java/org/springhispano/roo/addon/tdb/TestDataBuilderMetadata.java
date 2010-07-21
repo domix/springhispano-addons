@@ -62,17 +62,9 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
 
         // Por cada atributo de la clase se agrega uno igual al TDB
         for (FieldMetadata field : cid.getDeclaredFields()) {
-            // Aquellos campos Id o Version no tiene caso inclurlos
-            if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.persistence.Id")) != null || 
-                    MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.persistence.Version")) != null) {
+            if (isIgnorableField(field)) {
                 continue;
             }
-
-            // Aquellos campos Transient tampoco tiene caso inclurlos
-            if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.persistence.Transient")) != null) {
-                continue;
-            }
-
             this.builder.addField(createField(field));
             this.builder.addMethod(createWithFieldMethod(field));
             this.builder.addMethod(createWithNoFieldMethod(field));
@@ -83,6 +75,26 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
 
         // Create a representation of the desired output ITD
         itdTypeDetails = builder.build();
+    }
+    
+    private boolean isIgnorableField(FieldMetadata field) {
+        // Aquellos campos Id o Version no tiene caso inclurlos
+        if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.persistence.Id")) != null || 
+                MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.persistence.Version")) != null) {
+            return true;
+        }
+
+        // Aquellos campos Transient tampoco tiene caso inclurlos
+        if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.persistence.Transient")) != null) {
+            return true;
+        }
+        
+        // Si son estaticos y finales ignorarlos
+        if (Modifier.isFinal(field.getModifier()) && Modifier.isStatic(field.getModifier())) {
+            return true;
+        }
+ 
+        return false;
     }
 
     /**
@@ -292,6 +304,10 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
                 ' ' + objectName + " = new " + cid.getName() + "();");
         String fieldName = null;
         for (FieldMetadata field : cid.getDeclaredFields()) {
+            if (isIgnorableField(field)) {
+                continue;
+            }
+            
             fieldName = field.getFieldName().getSymbolName();
             body.appendFormalLine(objectName + ".set" + 
                     Character.toUpperCase(fieldName.charAt(0)) + 
