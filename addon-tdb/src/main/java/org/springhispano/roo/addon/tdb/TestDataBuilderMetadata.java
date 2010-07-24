@@ -158,16 +158,29 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
             hasManyToOne = optionalAttribute != null && !((Boolean) optionalAttribute.getValue());
         }
         
-        String initializer = "null"; 
-        if (field.getFieldType().equals(new JavaType(Date.class.getName()))) {
+        String initializer = "null";
+        /*
+         * Tipo java.util.Date y java.sql.Date
+         */
+        if (field.getFieldType().equals(new JavaType(Date.class.getName())) ||
+            field.getFieldType().equals(new JavaType(java.sql.Date.class.getName()))) {
+            String pack = field.getFieldType().equals(new JavaType(Date.class.getName())) ? "java.util" : "java.sql";
             if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Past")) != null) {
-                initializer = "new java.util.Date(new java.util.Date().getTime() - 10000000L)";
-            } else if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Future")) != null) {
-                initializer = "new java.util.Date(new java.util.Date().getTime() + 10000000L)";
-            } else {
-                initializer = "new java.util.Date()";
+                initializer = "new " + pack + "Date(new java.util.Date().getTime() - 10000000L)";
+            } 
+            else if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Future")) != null) {
+                initializer = "new " + pack + "Date(new java.util.Date().getTime() + 10000000L)";
+            } 
+            else {
+                initializer = "new " + pack + "Date()";
             }
-        } else if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.NotNull")) != null || MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Size")) != null || MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Min")) != null || MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Max")) != null || hasManyToOne || field.getAnnotations().size() == 0) {
+        }
+        else if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.NotNull")) != null ||
+                MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Size")) != null ||
+                MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Min")) != null ||
+                MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Max")) != null ||
+                hasManyToOne ||
+                field.getAnnotations().size() == 0) {
             // Only include the field if it's really required (ie marked with JSR 303 NotNull) or it has no annotations and is therefore probably simple to invoke
             if (field.getFieldType().equals(new JavaType(String.class.getName()))) {
                 initializer = field.getFieldName().getSymbolName();
@@ -213,37 +226,52 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
                 }
 
                 initializer = "\"" + initializer + "_\" + 1";
-            } else if (field.getFieldType().equals(new JavaType(Calendar.class.getName()))) {
+            }
+            else if (field.getFieldType().equals(new JavaType(Calendar.class.getName()))) {
                 if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Past")) != null) {
                     initializer = "new java.util.GregorianCalendar(java.util.Calendar.getInstance().get(java.util.Calendar.YEAR), java.util.Calendar.getInstance().get(java.util.Calendar.MONTH), java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) - 1)";
-                } else if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Future")) != null) {
+                }
+                else if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Future")) != null) {
                     initializer = "new java.util.GregorianCalendar(java.util.Calendar.getInstance().get(java.util.Calendar.YEAR), java.util.Calendar.getInstance().get(java.util.Calendar.MONTH), java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH) + 1)";
-                } else {
+                }
+                else {
                     initializer = "java.util.Calendar.getInstance()";
                 }
-            } else if (field.getFieldType().equals(JavaType.BOOLEAN_OBJECT)) {
+            }
+            else if (field.getFieldType().equals(JavaType.BOOLEAN_OBJECT)) {
                 initializer = "new Boolean(true)";
-            } else if (field.getFieldType().equals(JavaType.BOOLEAN_PRIMITIVE)) {
+            }
+            else if (field.getFieldType().equals(JavaType.BOOLEAN_PRIMITIVE)) {
                 initializer = "true";
-            } else if (field.getFieldType().equals(JavaType.INT_OBJECT)) {
+            }
+            else if (field.getFieldType().equals(JavaType.INT_OBJECT)) {
                 initializer = "new Integer(1)";
-            } else if (field.getFieldType().equals(JavaType.INT_PRIMITIVE)) {
+            }
+            else if (field.getFieldType().equals(JavaType.INT_PRIMITIVE)) {
                 initializer = "new Integer(1)"; // Auto-boxed
-            } else if (field.getFieldType().equals(JavaType.DOUBLE_OBJECT)) {
+            }
+            else if (field.getFieldType().equals(JavaType.DOUBLE_OBJECT)) {
                 initializer = "new Integer(1).doubleValue()"; // Auto-boxed
-            } else if (field.getFieldType().equals(JavaType.DOUBLE_PRIMITIVE)) {
+            }
+            else if (field.getFieldType().equals(JavaType.DOUBLE_PRIMITIVE)) {
                 initializer = "new Integer(1).doubleValue()";
-            } else if (field.getFieldType().equals(JavaType.FLOAT_OBJECT)) {
+            }
+            else if (field.getFieldType().equals(JavaType.FLOAT_OBJECT)) {
                 initializer = "new Integer(1).floatValue()"; // Auto-boxed
-            } else if (field.getFieldType().equals(JavaType.FLOAT_PRIMITIVE)) {
+            }
+            else if (field.getFieldType().equals(JavaType.FLOAT_PRIMITIVE)) {
                 initializer = "new Integer(1).floatValue()";
-            } else if (field.getFieldType().equals(JavaType.LONG_OBJECT)) {
+            }
+            else if (field.getFieldType().equals(JavaType.LONG_OBJECT)) {
                 initializer = "new Integer(1).longValue()"; // Auto-boxed
-            } else if (field.getFieldType().equals(JavaType.LONG_PRIMITIVE)) {
+            } 
+            else if (field.getFieldType().equals(JavaType.LONG_PRIMITIVE)) {
                 initializer = "new Integer(1).longValue()";
-            } else if (field.getFieldType().equals(JavaType.SHORT_OBJECT)) {
+            }
+            else if (field.getFieldType().equals(JavaType.SHORT_OBJECT)) {
                 initializer = "new Integer(1).shortValue()"; // Auto-boxed
-            } else if (field.getFieldType().equals(JavaType.SHORT_PRIMITIVE)) {
+            }
+            else if (field.getFieldType().equals(JavaType.SHORT_PRIMITIVE)) {
                 initializer = "new Integer(1).shortValue()";
             }
             // TODO: Todavia tengo que entender que esta haciendo aqui
