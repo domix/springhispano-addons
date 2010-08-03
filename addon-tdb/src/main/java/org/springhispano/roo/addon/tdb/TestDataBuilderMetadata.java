@@ -60,18 +60,21 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
         ClassOrInterfaceTypeDetails cid = (ClassOrInterfaceTypeDetails) originalClassPhysicalTypeMetadata
                 .getPhysicalTypeDetails();
 
-        // Por cada atributo de la clase se agrega uno igual al TDB
-        for (FieldMetadata field : cid.getDeclaredFields()) {
-            if (isIgnorableField(field)) {
-                continue;
+        // Porque puede venir nulo cid?
+        if (cid != null) {
+            // Por cada atributo de la clase se agrega uno igual al TDB
+            for (FieldMetadata field : cid.getDeclaredFields()) {
+                if (isIgnorableField(field)) {
+                    continue;
+                }
+                this.builder.addField(createField(field));
+                this.builder.addMethod(createWithFieldMethod(field));
+                this.builder.addMethod(createWithNoFieldMethod(field));
             }
-            this.builder.addField(createField(field));
-            this.builder.addMethod(createWithFieldMethod(field));
-            this.builder.addMethod(createWithNoFieldMethod(field));
-        }
 
-        // Por ultimo crear el metodo build
-        builder.addMethod(createBuildMethod(cid));
+            // Por ultimo crear el metodo build
+            builder.addMethod(createBuildMethod(cid));
+        }
 
         // Create a representation of the desired output ITD
         itdTypeDetails = builder.build();
@@ -164,7 +167,7 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
          */
         if (field.getFieldType().equals(new JavaType(Date.class.getName())) ||
             field.getFieldType().equals(new JavaType(java.sql.Date.class.getName()))) {
-            String pack = field.getFieldType().equals(new JavaType(Date.class.getName())) ? "java.util" : "java.sql";
+            String pack = field.getFieldType().equals(new JavaType(Date.class.getName())) ? "java.util." : "java.sql.";
             if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.validation.constraints.Past")) != null) {
                 initializer = "new " + pack + "Date(new java.util.Date().getTime() - 10000000L)";
             } 
