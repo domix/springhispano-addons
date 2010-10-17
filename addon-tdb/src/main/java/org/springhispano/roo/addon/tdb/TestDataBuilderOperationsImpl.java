@@ -1,32 +1,23 @@
 package org.springhispano.roo.addon.tdb;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
 import org.springframework.roo.classpath.PhysicalTypeCategory;
 import org.springframework.roo.classpath.PhysicalTypeIdentifier;
-import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetails;
-import org.springframework.roo.classpath.details.DefaultClassOrInterfaceTypeDetails;
-import org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue;
-import org.springframework.roo.classpath.details.annotations.AnnotationMetadata;
-import org.springframework.roo.classpath.details.annotations.ClassAttributeValue;
-import org.springframework.roo.classpath.details.annotations.DefaultAnnotationMetadata;
+import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetailsBuilder;
+import org.springframework.roo.classpath.details.annotations.AnnotationMetadataBuilder;
 import org.springframework.roo.classpath.operations.ClasspathOperations;
 import org.springframework.roo.metadata.MetadataService;
 import org.springframework.roo.model.JavaPackage;
-import org.springframework.roo.model.JavaSymbolName;
 import org.springframework.roo.model.JavaType;
-import org.springframework.roo.project.Dependency;
-import org.springframework.roo.project.Path;
-import org.springframework.roo.project.PathResolver;
-import org.springframework.roo.project.ProjectMetadata;
-import org.springframework.roo.project.ProjectOperations;
+import org.springframework.roo.project.*;
+
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Implementacion de los comandos del addon Test Data Builder.
@@ -95,32 +86,21 @@ public class TestDataBuilderOperationsImpl implements TestDataBuilderOperations 
         
         // Crear un identificador PhysicalTypeMetadata del tipo del Test Data Builder
         String identifier = PhysicalTypeIdentifier.createIdentifier(tdbJavaType, Path.SRC_MAIN_JAVA);
+
+        AnnotationMetadataBuilder amBuilder =
+                new AnnotationMetadataBuilder(new JavaType("org.springhispano.roo.addon.tdb.RooTestDataBuilder"));
+        amBuilder.addClassAttribute("clazz", clazz);
+
+        ClassOrInterfaceTypeDetailsBuilder typeBuilder =
+                new ClassOrInterfaceTypeDetailsBuilder(
+                        identifier, Modifier.PUBLIC, tdbJavaType, PhysicalTypeCategory.CLASS);
+
+        List<AnnotationMetadataBuilder> annotationBuilders = new ArrayList<AnnotationMetadataBuilder>();
+        annotationBuilders.add(amBuilder);
         
-        // La clase TDB sera anotada con RooTestDataBuilder 
-        List<AnnotationMetadata> classAnnotations = new ArrayList<AnnotationMetadata>();
+        typeBuilder.setAnnotations(annotationBuilders);
         
-        // NOTA: Esta creacion de Anotaciones y sus atributos es tediosa hay que hacer alguna
-        // utileria para generarlas mas facilmente
-        
-        // La anotacion RooTestDataBuilder tiene un atributo clazz que indica la clase de la cual
-        // se esta creando el Builder
-        List<AnnotationAttributeValue<?>> tdbAnnotationAttributes = 
-            new ArrayList<AnnotationAttributeValue<?>>();
-        tdbAnnotationAttributes.add(new ClassAttributeValue(new JavaSymbolName("clazz"), clazz));
-        
-        classAnnotations.add(new DefaultAnnotationMetadata(
-                new JavaType("org.springhispano.roo.addon.tdb.RooTestDataBuilder"),
-                tdbAnnotationAttributes));
-        
-        ClassOrInterfaceTypeDetails classDetails = new DefaultClassOrInterfaceTypeDetails(
-                identifier, // Identificador en Roo
-                tdbJavaType, // Tipo de la clase (paquete + nombre)
-                Modifier.PUBLIC, // La clase sera publica
-                PhysicalTypeCategory.CLASS,
-                classAnnotations // Anotaciones para la clase
-                );
-        
-        this.classpathOperations.generateClassFile(classDetails);
+        this.classpathOperations.generateClassFile(typeBuilder.build());
     }
 
     /*

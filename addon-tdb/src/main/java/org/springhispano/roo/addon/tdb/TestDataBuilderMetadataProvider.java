@@ -1,8 +1,5 @@
 package org.springhispano.roo.addon.tdb;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
@@ -12,6 +9,8 @@ import org.springframework.roo.classpath.itd.AbstractItdMetadataProvider;
 import org.springframework.roo.classpath.itd.ItdTypeDetailsProvidingMetadataItem;
 import org.springframework.roo.model.JavaType;
 import org.springframework.roo.project.Path;
+
+import java.util.logging.Logger;
 
 /**
  * Proveedor de metadatos.
@@ -31,10 +30,9 @@ public class TestDataBuilderMetadataProvider extends AbstractItdMetadataProvider
      * @param context
      */
     protected void activate(ComponentContext context) {
-        // Dependencia entre MID:org.springframework.roo.classpath.PhysicalTypeIdentifier y 
-        // MID:org.springhispano.roo.addon.tdb.TestDataBuilderMetadata
-        // con esto se logra hacer que cuando exista un cambio en los metadatos fisicos
-        // de la clase Test Data Builder se notifique a los metadatos del Test Data Builder
+        // Se registra la dependencia entre 
+        // MID:org.springframework.roo.classpath.PhysicalTypeIdentifier y 
+        // MID:org.springhispano.roo.addon.tdb.TestDataBuilderMetadata 
         metadataDependencyRegistry.registerDependency(
                 PhysicalTypeIdentifier.getMetadataIdentiferType(), getProvidesType());
         

@@ -1,22 +1,12 @@
 package org.springhispano.roo.addon.tdb;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
 import org.springframework.roo.classpath.PhysicalTypeMetadata;
-import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetails;
-import org.springframework.roo.classpath.details.DefaultFieldMetadata;
-import org.springframework.roo.classpath.details.DefaultMethodMetadata;
-import org.springframework.roo.classpath.details.FieldMetadata;
-import org.springframework.roo.classpath.details.MemberFindingUtils;
-import org.springframework.roo.classpath.details.MethodMetadata;
+import org.springframework.roo.classpath.details.*;
 import org.springframework.roo.classpath.details.annotations.AnnotatedJavaType;
 import org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue;
 import org.springframework.roo.classpath.details.annotations.AnnotationMetadata;
+import org.springframework.roo.classpath.details.annotations.AnnotationMetadataBuilder;
 import org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem;
 import org.springframework.roo.classpath.itd.InvocableMemberBodyBuilder;
 import org.springframework.roo.metadata.MetadataIdentificationUtils;
@@ -25,6 +15,12 @@ import org.springframework.roo.model.JavaType;
 import org.springframework.roo.project.Path;
 import org.springframework.roo.support.style.ToStringCreator;
 import org.springframework.roo.support.util.Assert;
+
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Metadata
@@ -126,12 +122,15 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
 
         List<AnnotatedJavaType> parameters = new ArrayList<AnnotatedJavaType>();
         List<JavaSymbolName> parameterNames = new ArrayList<JavaSymbolName>();
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         List<JavaType> throwsTypes = new ArrayList<JavaType>();
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName,
-                this.governorTypeDetails.getName(), // regresa un tipo de si mismo (this)
-                parameters, parameterNames, annotations, throwsTypes, body.getOutput());
+        MethodMetadataBuilder methodBuilder = new MethodMetadataBuilder(
+                getId(), Modifier.PUBLIC, methodName, this.governorTypeDetails.getName(),
+                parameters, parameterNames, body);
+        methodBuilder.setAnnotations(annotations);
+        methodBuilder.setThrowsTypes(throwsTypes);
+        return methodBuilder.build();
     }
 
     /**
@@ -140,9 +139,11 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
      * @return Metadata del campo de la clase TDB
      */
     private FieldMetadata createField(FieldMetadata field) {
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
-        return new DefaultFieldMetadata(getId(), Modifier.PRIVATE, field.getFieldName(),
-                field.getFieldType(), getDefaultValue(field), annotations);
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
+        FieldMetadataBuilder fieldBuilder = new FieldMetadataBuilder(getId(), Modifier.PRIVATE, field.getFieldName(),
+                field.getFieldType(), getDefaultValue(field));
+        fieldBuilder.setAnnotations(annotations);
+        return fieldBuilder.build();
     }
 
     private String getDefaultValue(FieldMetadata field) {
@@ -349,12 +350,14 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
 
         List<AnnotatedJavaType> parameters = new ArrayList<AnnotatedJavaType>();
         List<JavaSymbolName> parameterNames = new ArrayList<JavaSymbolName>();
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         List<JavaType> throwsTypes = new ArrayList<JavaType>();
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName,
-                cid.getName(), parameters, parameterNames, annotations, throwsTypes,
-                body.getOutput());
+        MethodMetadataBuilder methodBuilder = new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName,
+                cid.getName(), parameters, parameterNames, body);
+        methodBuilder.setAnnotations(annotations);
+        methodBuilder.setThrowsTypes(throwsTypes);
+        return methodBuilder.build();
     }
 
     /**
@@ -390,12 +393,14 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
         List<JavaSymbolName> parameterNames = new ArrayList<JavaSymbolName>();
         parameterNames.add(field.getFieldName());
         
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         List<JavaType> throwsTypes = new ArrayList<JavaType>();
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName,
-                this.governorTypeDetails.getName(), // regresa un tipo de si mismo (this)
-                parameters, parameterNames, annotations, throwsTypes, body.getOutput());
+        MethodMetadataBuilder methodBuilder = new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName,
+                this.governorTypeDetails.getName(), parameters, parameterNames, body);
+        methodBuilder.setAnnotations(annotations);
+        methodBuilder.setThrowsTypes(throwsTypes);
+        return methodBuilder.build();
     }
 
     /**
