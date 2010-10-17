@@ -13,8 +13,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<roo.version>1.1.0.M2</roo.version>
-		<junit.version>3.8.1</junit.version>
+		<roo.version>1.1.0.RC1</roo.version>
+		<junit.version>4.8.1</junit.version>
 	</properties>
 
 	<repositories>
@@ -48,7 +48,20 @@
 			<name>Spring Framework Maven Repository - Nightly Snapshots</name>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
+        <repository>
+            <id>spring-roo-repository</id>
+            <name>Spring Roo Repository</name>
+            <url>http://spring-roo-repository.springsource.org/release</url>
+        </repository>
 	</repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-roo-repository</id>
+            <name>Spring Roo Repository</name>
+            <url>http://spring-roo-repository.springsource.org/release</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 	<dependencies>
 		<dependency>
