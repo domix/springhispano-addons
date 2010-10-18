@@ -9,11 +9,14 @@ import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
 import org.springframework.roo.classpath.PhysicalTypeMetadata;
 import org.springframework.roo.classpath.details.DefaultFieldMetadata;
 import org.springframework.roo.classpath.details.DefaultMethodMetadata;
+import org.springframework.roo.classpath.details.MethodMetadataBuilder;
 import org.springframework.roo.classpath.details.FieldMetadata;
+import org.springframework.roo.classpath.details.FieldMetadataBuilder;
 import org.springframework.roo.classpath.details.MethodMetadata;
 import org.springframework.roo.classpath.details.annotations.AnnotatedJavaType;
 import org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue;
 import org.springframework.roo.classpath.details.annotations.AnnotationMetadata;
+import org.springframework.roo.classpath.details.annotations.AnnotationMetadataBuilder;
 import org.springframework.roo.classpath.details.annotations.DefaultAnnotationMetadata;
 import org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem;
 import org.springframework.roo.classpath.itd.InvocableMemberBodyBuilder;
@@ -84,12 +87,16 @@ public class AuditableFieldsMetadata extends AbstractItdTypeDetailsProvidingMeta
 
         List<AnnotatedJavaType> parameters = new ArrayList<AnnotatedJavaType>();
         List<JavaSymbolName> parameterNames = new ArrayList<JavaSymbolName>();
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         List<JavaType> throwsTypes = new ArrayList<JavaType>();
-
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName,
+                                        
+        MethodMetadataBuilder methodBuilder = new MethodMetadataBuilder(
+                getId(), Modifier.PUBLIC, methodName,
                 new JavaType(type),
-                parameters, parameterNames, annotations, throwsTypes, body.getOutput());
+                parameters, parameterNames, body);
+        methodBuilder.setAnnotations(annotations);
+        methodBuilder.setThrowsTypes(throwsTypes);
+        return methodBuilder.build();
     }
 
     private MethodMetadata createSetterMethod(String fieldName, String type) {
@@ -113,12 +120,15 @@ public class AuditableFieldsMetadata extends AbstractItdTypeDetailsProvidingMeta
         List<JavaSymbolName> parameterNames = new ArrayList<JavaSymbolName>();
         parameterNames.add(new JavaSymbolName(fieldName));
         
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         List<JavaType> throwsTypes = new ArrayList<JavaType>();
-
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName,
+                   
+        MethodMetadataBuilder methodBuilder = new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName,
                 JavaType.VOID_PRIMITIVE,
-                parameters, parameterNames, annotations, throwsTypes, body.getOutput());
+                parameters, parameterNames, body);
+        methodBuilder.setAnnotations(annotations);
+        methodBuilder.setThrowsTypes(throwsTypes);
+        return methodBuilder.build();
     }
 
     private FieldMetadata createDateField(String fieldName, String columnName, boolean notNull) {
@@ -138,11 +148,13 @@ public class AuditableFieldsMetadata extends AbstractItdTypeDetailsProvidingMeta
 
         // Esta es la ventaja de crear un DateField ya que con este podemos
         // generar las anotaciones adecuadas
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         fieldDetails.decorateAnnotationsList(annotations);
-
-        return new DefaultFieldMetadata(getId(), Modifier.PRIVATE, fieldDetails.getFieldName(),
-                fieldDetails.getFieldType(), null, annotations);
+                                                                                             
+        FieldMetadataBuilder fieldBuilder = new FieldMetadataBuilder(getId(), Modifier.PRIVATE, fieldDetails.getFieldName(),
+                fieldDetails.getFieldType(), null);
+        fieldBuilder.setAnnotations(annotations);
+        return fieldBuilder.build();
     }
 
     private FieldMetadata createUserField(String fieldName, String columnName, boolean notNull) {
@@ -156,11 +168,13 @@ public class AuditableFieldsMetadata extends AbstractItdTypeDetailsProvidingMeta
 
         // Esta es la ventaja de crear un StringField ya que con este podemos
         // generar las anotaciones adecuadas
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         fieldDetails.decorateAnnotationsList(annotations);
 
-        return new DefaultFieldMetadata(getId(), Modifier.PRIVATE, fieldDetails.getFieldName(),
-                fieldDetails.getFieldType(), null, annotations);
+        FieldMetadataBuilder fieldBuilder = new FieldMetadataBuilder(getId(), Modifier.PRIVATE, fieldDetails.getFieldName(),
+                fieldDetails.getFieldType(), null);
+        fieldBuilder.setAnnotations(annotations);
+        return fieldBuilder.build();
     }
 
     private MethodMetadata methodExists(JavaSymbolName methodName,

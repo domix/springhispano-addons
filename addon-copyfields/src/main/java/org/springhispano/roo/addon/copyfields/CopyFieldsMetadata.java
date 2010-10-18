@@ -3,16 +3,18 @@ package org.springhispano.roo.addon.copyfields;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
-import org.springframework.roo.classpath.PhysicalTypeMetadata;
-import org.springframework.roo.classpath.details.DefaultMethodMetadata;
-import org.springframework.roo.classpath.details.FieldMetadata;
-import org.springframework.roo.classpath.details.MethodMetadata;
 import org.springframework.roo.classpath.details.annotations.AnnotatedJavaType;
 import org.springframework.roo.classpath.details.annotations.AnnotationMetadata;
+import org.springframework.roo.classpath.details.annotations.AnnotationMetadataBuilder;
+import org.springframework.roo.classpath.details.DefaultMethodMetadata;
+import org.springframework.roo.classpath.details.FieldMetadata;
+import org.springframework.roo.classpath.details.FieldMetadataBuilder;
+import org.springframework.roo.classpath.details.MethodMetadata;
+import org.springframework.roo.classpath.details.MethodMetadataBuilder;
 import org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem;
 import org.springframework.roo.classpath.itd.InvocableMemberBodyBuilder;
+import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
+import org.springframework.roo.classpath.PhysicalTypeMetadata;
 import org.springframework.roo.metadata.MetadataIdentificationUtils;
 import org.springframework.roo.model.JavaSymbolName;
 import org.springframework.roo.model.JavaType;
@@ -95,12 +97,15 @@ public class CopyFieldsMetadata extends AbstractItdTypeDetailsProvidingMetadataI
         List<JavaSymbolName> parameterNames = new ArrayList<JavaSymbolName>();
         parameterNames.add(new JavaSymbolName("object"));
 
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
+        List<AnnotationMetadataBuilder> annotations = new ArrayList<AnnotationMetadataBuilder>();
         List<JavaType> throwsTypes = new ArrayList<JavaType>();
-
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName,
+                  
+        MethodMetadataBuilder methodBuilder = new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName,
                 JavaType.VOID_PRIMITIVE,
-                parameters, parameterNames, annotations, throwsTypes, body.getOutput());
+                parameters, parameterNames, body);
+        methodBuilder.setAnnotations(annotations);
+        methodBuilder.setThrowsTypes(throwsTypes);
+        return methodBuilder.build();
     }
 
     /**

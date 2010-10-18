@@ -1,7 +1,10 @@
 package org.springhispano.roo.addon.tdb;
 
-import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
-import org.springframework.roo.classpath.PhysicalTypeMetadata;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import org.springframework.roo.classpath.details.*;
 import org.springframework.roo.classpath.details.annotations.AnnotatedJavaType;
 import org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue;
@@ -9,6 +12,8 @@ import org.springframework.roo.classpath.details.annotations.AnnotationMetadata;
 import org.springframework.roo.classpath.details.annotations.AnnotationMetadataBuilder;
 import org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem;
 import org.springframework.roo.classpath.itd.InvocableMemberBodyBuilder;
+import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
+import org.springframework.roo.classpath.PhysicalTypeMetadata;
 import org.springframework.roo.metadata.MetadataIdentificationUtils;
 import org.springframework.roo.model.JavaSymbolName;
 import org.springframework.roo.model.JavaType;
@@ -16,11 +21,6 @@ import org.springframework.roo.project.Path;
 import org.springframework.roo.support.style.ToStringCreator;
 import org.springframework.roo.support.util.Assert;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Metadata
