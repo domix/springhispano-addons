@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
+
+import org.springframework.roo.addon.javabean.JavaBeanMetadata;
 import org.springframework.roo.classpath.details.*;
 import org.springframework.roo.classpath.details.annotations.AnnotatedJavaType;
 import org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue;
@@ -15,6 +18,7 @@ import org.springframework.roo.classpath.itd.InvocableMemberBodyBuilder;
 import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
 import org.springframework.roo.classpath.PhysicalTypeMetadata;
 import org.springframework.roo.metadata.MetadataIdentificationUtils;
+import org.springframework.roo.metadata.MetadataService;
 import org.springframework.roo.model.JavaSymbolName;
 import org.springframework.roo.model.JavaType;
 import org.springframework.roo.project.Path;
@@ -29,10 +33,14 @@ import org.springframework.roo.support.util.Assert;
  * 
  */
 public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMetadataItem {
+    
+    private static final Logger LOGGER = Logger.getLogger(TestDataBuilderMetadata.class.getName());
 
     private static final String PROVIDES_TYPE_STRING = TestDataBuilderMetadata.class.getName();
     private static final String PROVIDES_TYPE = MetadataIdentificationUtils
             .create(PROVIDES_TYPE_STRING);
+    
+    private MetadataService metadataService;
 
     /**
      * Constructor
@@ -41,31 +49,54 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
      * @param aspectName
      * @param governorPhysicalTypeMetadata
      * @param originalClassPhysicalTypeMetadata
+     * @param metadataService 
      */
     public TestDataBuilderMetadata(String identifier, JavaType aspectName,
             PhysicalTypeMetadata governorPhysicalTypeMetadata,
-            PhysicalTypeMetadata originalClassPhysicalTypeMetadata) {
+            PhysicalTypeMetadata originalClassPhysicalTypeMetadata, MetadataService metadataService) {
         super(identifier, aspectName, governorPhysicalTypeMetadata);
         Assert.isTrue(isValid(identifier), "Metadata identification string '" + identifier
                 + "' does not appear to be a valid");
+        this.metadataService = metadataService;
 
         if (!isValid()) {
             return;
         }
 
-        ClassOrInterfaceTypeDetails cid = (ClassOrInterfaceTypeDetails) originalClassPhysicalTypeMetadata
-                .getPhysicalTypeDetails();
+        // Estos son los detalles de la clase TDB
+        ClassOrInterfaceTypeDetails governorCid = 
+            (ClassOrInterfaceTypeDetails) governorPhysicalTypeMetadata.getPhysicalTypeDetails();
+        // Estos son los detalles de la clase a la cual se le esta creando el TDB
+        ClassOrInterfaceTypeDetails cid = 
+            (ClassOrInterfaceTypeDetails) originalClassPhysicalTypeMetadata.getPhysicalTypeDetails();
 
-        // Porque puede venir nulo cid?
+        // DUDA: Porque puede venir nulo cid?
         if (cid != null) {
             // Por cada atributo de la clase se agrega uno igual al TDB
             for (FieldMetadata field : cid.getDeclaredFields()) {
                 if (isIgnorableField(field)) {
                     continue;
                 }
-                this.builder.addField(createField(field));
-                this.builder.addMethod(createWithFieldMethod(field));
-                this.builder.addMethod(createWithNoFieldMethod(field));
+                // Si el campo ya existe definido en el archivo .java del TDB,
+                if (MemberFindingUtils.getField(governorCid, field.getFieldName()) == null) {
+                    this.builder.addField(createField(field));
+                }
+
+                // addMethod, asi como addField lanzan IllegalArgumentException si el campo o
+                // metodo ya existen definidos
+                try {
+                    this.builder.addMethod(createWithFieldMethod(field));
+                }
+                catch (IllegalArgumentException ex) {
+                }
+                // Para tipos primitivos no se crea un metodo withNoXXX
+                if (!isPrimitiveField(field)) {
+                    try {
+                        this.builder.addMethod(createWithNoFieldMethod(field));
+                    }
+                    catch (IllegalArgumentException ex) {
+                    }
+                }
             }
 
             // Por ultimo crear el metodo build
@@ -76,6 +107,30 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
         itdTypeDetails = builder.build();
     }
     
+    /** 
+     * @param field Metadatos del campo
+     * @return true si el field que se recibe tiene un tipo de Java primitivo, false de lo contrario
+     */
+    private boolean isPrimitiveField(FieldMetadata field) {
+        JavaType fieldJavaType = field.getFieldType();
+        JavaType[] primitiveJavaTypes = new JavaType[]{
+                JavaType.BOOLEAN_PRIMITIVE, JavaType.BYTE_PRIMITIVE, JavaType.CHAR_PRIMITIVE, 
+                JavaType.DOUBLE_PRIMITIVE, JavaType.FLOAT_PRIMITIVE, JavaType.INT_PRIMITIVE,
+                JavaType.LONG_PRIMITIVE, JavaType.SHORT_PRIMITIVE,
+        };
+        for (int index = 0; index < primitiveJavaTypes.length; ++index) {
+            if (primitiveJavaTypes[index].equals(fieldJavaType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 
+     * @param field
+     * @return true si es un cam
+     */
     private boolean isIgnorableField(FieldMetadata field) {
         // Aquellos campos Id o Version no tiene caso inclurlos
         if (MemberFindingUtils.getAnnotationOfType(field.getAnnotations(), new JavaType("javax.persistence.Id")) != null || 
@@ -326,6 +381,7 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
      * @return
      */
     private MethodMetadata createBuildMethod(ClassOrInterfaceTypeDetails cid) {
+        //LOGGER.info("Creando el metodo build");
         JavaSymbolName methodName = new JavaSymbolName("build");
 
         InvocableMemberBodyBuilder body = new InvocableMemberBodyBuilder();
@@ -341,10 +397,31 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
             }
             
             fieldName = field.getFieldName().getSymbolName();
-            body.appendFormalLine(objectName + ".set" + 
-                    Character.toUpperCase(fieldName.charAt(0)) + 
-                    fieldName.substring(1, fieldName.length()) +
-                    "(this." + fieldName + ");");
+            String setMethodStr = "set" + Character.toUpperCase(fieldName.charAt(0)) + 
+                fieldName.substring(1, fieldName.length());
+            
+            // Verificar la existencia del metodo setXXX
+            List<JavaType> methodParams = new ArrayList<JavaType>();
+            methodParams.add(field.getFieldType());
+            MethodMetadata methodMetadata = 
+                MemberFindingUtils.getMethod(cid, new JavaSymbolName(setMethodStr), methodParams);
+            //LOGGER.info("methodMetadata = [" + methodMetadata + ']');
+            
+            // Si no existe en el propio archivo .java entonces probablemente en el @RooJavaBean
+            if (methodMetadata == null) {
+                String metadataIdentifier = 
+                    JavaBeanMetadata.createIdentifier(cid.getName(), Path.SRC_MAIN_JAVA);
+                JavaBeanMetadata javaBeanMetadata = 
+                    (JavaBeanMetadata) this.metadataService.get(metadataIdentifier);
+                if (javaBeanMetadata != null) {
+                    methodMetadata = javaBeanMetadata.getDeclaredSetter(field);
+                }
+            }
+            
+            // Solo si existe el metodo setXXX se agrega al codigo
+            if (methodMetadata != null) {
+                body.appendFormalLine(objectName + "." + setMethodStr + "(this." + fieldName + ");");
+            }
         }
         body.appendFormalLine("return " + objectName + ';');;
 

@@ -56,7 +56,9 @@ public class TestDataBuilderCommands implements CommandMarker {
             throw new IllegalArgumentException(
                     "Cannot locate source for [" + javaType.getFullyQualifiedTypeName() + ']');
         }
+        // Agregar la dependencia a los addons de SpringHispano al pom.xml
 	    this.operations.addRooTestDataBuilderDependencyIfNoPresent();
+	    // Crear el TDB
 	    this.operations.createTestDataBuilder(javaType);	
 	}
 }

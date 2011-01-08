@@ -109,6 +109,8 @@ public class TestDataBuilderOperationsImpl implements TestDataBuilderOperations 
      */
     public void addRooTestDataBuilderDependencyIfNoPresent() {
         // NOTA: Que va a pasar cuando la version cambie?
+        // NOTA: Esta operacion potencialmente puede llegar a ser usada por todos los addons
+        // ¿como hacer para que esta sea una especie de utileria?
         
         // No es necesario verificar si existe, esta operacion no hace nada si ya esta en el pom
         this.projectOperations.addDependency(
