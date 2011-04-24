@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.roo.addon.javabean.JavaBeanMetadata;
+import org.springframework.roo.classpath.PhysicalTypeDetails;
 import org.springframework.roo.classpath.details.*;
 import org.springframework.roo.classpath.details.annotations.AnnotatedJavaType;
 import org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue;
@@ -47,14 +48,14 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
      * 
      * @param identifier
      * @param aspectName
-     * @param governorPhysicalTypeMetadata
+     * @param tdbClassPhysicalTypeMetadata
      * @param originalClassPhysicalTypeMetadata
      * @param metadataService 
      */
     public TestDataBuilderMetadata(String identifier, JavaType aspectName,
-            PhysicalTypeMetadata governorPhysicalTypeMetadata,
+            PhysicalTypeMetadata tdbClassPhysicalTypeMetadata,
             PhysicalTypeMetadata originalClassPhysicalTypeMetadata, MetadataService metadataService) {
-        super(identifier, aspectName, governorPhysicalTypeMetadata);
+        super(identifier, aspectName, tdbClassPhysicalTypeMetadata);
         Assert.isTrue(isValid(identifier), "Metadata identification string '" + identifier
                 + "' does not appear to be a valid");
         this.metadataService = metadataService;
@@ -63,22 +64,21 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
             return;
         }
 
-        // Estos son los detalles de la clase TDB
-        ClassOrInterfaceTypeDetails governorCid = 
-            (ClassOrInterfaceTypeDetails) governorPhysicalTypeMetadata.getPhysicalTypeDetails();
-        // Estos son los detalles de la clase a la cual se le esta creando el TDB
-        ClassOrInterfaceTypeDetails cid = 
-            (ClassOrInterfaceTypeDetails) originalClassPhysicalTypeMetadata.getPhysicalTypeDetails();
+        ClassOrInterfaceTypeDetails tdbClassCid =
+                getClassOrInterfaceTypeDetailsFromPhysicalTypeMetadataOrNull(tdbClassPhysicalTypeMetadata);
 
-        // DUDA: Porque puede venir nulo cid?
-        if (cid != null) {
+        ClassOrInterfaceTypeDetails originalClassCid =
+               getClassOrInterfaceTypeDetailsFromPhysicalTypeMetadataOrNull(originalClassPhysicalTypeMetadata);
+
+        // DUDA: Porque puede venir nulo originalClassCid?
+        if (originalClassCid != null && tdbClassCid != null) {
             // Por cada atributo de la clase se agrega uno igual al TDB
-            for (FieldMetadata field : cid.getDeclaredFields()) {
+            for (FieldMetadata field : originalClassCid.getDeclaredFields()) {
                 if (isIgnorableField(field)) {
                     continue;
                 }
-                // Si el campo ya existe definido en el archivo .java del TDB,
-                if (MemberFindingUtils.getField(governorCid, field.getFieldName()) == null) {
+                
+                if (!existsFieldNameInClass(field.getFieldName(), tdbClassCid)) {
                     this.builder.addField(createField(field));
                 }
 
@@ -89,7 +89,7 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
                 }
                 catch (IllegalArgumentException ex) {
                 }
-                // Para tipos primitivos no se crea un metodo withNoXXX
+
                 if (!isPrimitiveField(field)) {
                     try {
                         this.builder.addMethod(createWithNoFieldMethod(field));
@@ -99,14 +99,29 @@ public class TestDataBuilderMetadata extends AbstractItdTypeDetailsProvidingMeta
                 }
             }
 
-            // Por ultimo crear el metodo build
-            builder.addMethod(createBuildMethod(cid));
+            builder.addMethod(createBuildMethod(originalClassCid));
         }
 
         // Create a representation of the desired output ITD
         itdTypeDetails = builder.build();
     }
-    
+
+    private boolean existsFieldNameInClass(JavaSymbolName fieldName, ClassOrInterfaceTypeDetails cid) {
+        if (MemberFindingUtils.getField(cid, fieldName) == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private ClassOrInterfaceTypeDetails getClassOrInterfaceTypeDetailsFromPhysicalTypeMetadataOrNull(
+            PhysicalTypeMetadata physicalTypeMetadata) {
+        PhysicalTypeDetails physicalTypeDetails = physicalTypeMetadata.getMemberHoldingTypeDetails();
+        if (physicalTypeDetails != null && physicalTypeDetails instanceof ClassOrInterfaceTypeDetails) {
+            return (ClassOrInterfaceTypeDetails) physicalTypeDetails;
+        }
+        return null;
+    }
+
     /** 
      * @param field Metadatos del campo
      * @return true si el field que se recibe tiene un tipo de Java primitivo, false de lo contrario

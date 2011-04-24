@@ -8,15 +8,19 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.component.ComponentContext;
+import org.springframework.roo.classpath.TypeManagementService;
 import org.springframework.roo.classpath.details.annotations.AnnotationMetadataBuilder;
 import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetailsBuilder;
-import org.springframework.roo.classpath.operations.ClasspathOperations;
 import org.springframework.roo.classpath.PhysicalTypeCategory;
 import org.springframework.roo.classpath.PhysicalTypeIdentifier;
 import org.springframework.roo.metadata.MetadataService;
 import org.springframework.roo.model.JavaPackage;
 import org.springframework.roo.model.JavaType;
-import org.springframework.roo.project.*;
+import org.springframework.roo.project.Dependency;
+import org.springframework.roo.project.Path;
+import org.springframework.roo.project.PathResolver;
+import org.springframework.roo.project.ProjectMetadata;
+import org.springframework.roo.project.ProjectOperations;
 
 
 /**
@@ -48,7 +52,7 @@ public class TestDataBuilderOperationsImpl implements TestDataBuilderOperations 
 	 * Provee de metodos para generar archivos Java
 	 */
 	@Reference
-	private ClasspathOperations classpathOperations;
+    private TypeManagementService typeManagementService;
 
     private ComponentContext context;
 
@@ -100,7 +104,7 @@ public class TestDataBuilderOperationsImpl implements TestDataBuilderOperations 
         
         typeBuilder.setAnnotations(annotationBuilders);
         
-        this.classpathOperations.generateClassFile(typeBuilder.build());
+        this.typeManagementService.generateClassFile(typeBuilder.build());
     }
 
     /*

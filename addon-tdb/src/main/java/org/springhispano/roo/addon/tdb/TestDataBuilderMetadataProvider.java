@@ -3,8 +3,7 @@ package org.springhispano.roo.addon.tdb;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.component.ComponentContext;
-import org.springframework.roo.addon.beaninfo.BeanInfoMetadataProvider;
+import org.osgi.service.component.ComponentContext; 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.classpath.PhysicalTypeIdentifier;
 import org.springframework.roo.classpath.PhysicalTypeMetadata;
@@ -26,9 +25,6 @@ import java.util.logging.Logger;
 public class TestDataBuilderMetadataProvider extends AbstractItdMetadataProvider {
     
     private static final Logger LOGGER = Logger.getLogger(TestDataBuilderMetadataProvider.class.getName());
-    
-    @Reference
-    private BeanInfoMetadataProvider beanInfoMetadataProvider;
 
     /**
      * Llamado al activar el componente
