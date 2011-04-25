@@ -3,15 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>springhispano-addons</artifactId>
+        <artifactId>org.springhispano.roo.addon.auditablefields.pom</artifactId>
         <groupId>org.springhispano.roo.addon</groupId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
     <groupId>org.springhispano.roo.addon</groupId>
     <artifactId>org.springhispano.roo.addon.auditablefields</artifactId>
     <packaging>bundle</packaging>
-    <version>0.1.0-SNAPSHOT</version>
-    <name>SpringHispano.org - Auditable Fields</name>
+    <version>${addon.auditablefields.version}</version>
+    <name>SpringHispano.org - Auditable Fields Addon</name>
     <description>
         Addon para generar los campos de auditoria: fecha de creacion/modificacion y usuarios de
         creacion/modificacion

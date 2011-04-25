@@ -1,0 +1,1 @@
+@set ROO_ADDON_CLASSPATH_FILE="/home/abaddon/Projects/SpringHispano/copia-limpia/springhispano-addons/addon-tdb/addon/target\roo_classpath.txt"
