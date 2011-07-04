@@ -13,9 +13,13 @@
     <version>${addon.tdb.version}</version>
     <name>SpringHispano.org - Test Data Builder Addon</name>
     <description>
-        Addon para generar una clase que aplique el patron Test Data Builer para el
-        POJO que se especifique
+        Addon de Spring Roo para generar una clase que aplique el patron Test Data Builer
+        Spring Roo addon to generate a class that applies the pattern Test Data Builder
     </description>
+
+    <properties>
+        <deploy.directory>${basedir}/target/deploy</deploy.directory>
+    </properties>
 
     <dependencies>
         <!-- OSGi -->
@@ -94,6 +98,7 @@
         </dependency>
         <!-- Other modules (if any) -->
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -247,4 +252,53 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <!-- use the following if you're not using a snapshot version. -->
+        <repository>
+            <id>springhispano-addons.googlecode.releases</id>
+            <name>springhispano-addons.googlecode.releases</name>
+            <url>file:${deploy.directory}/repo/releases</url>
+        </repository>
+        <!-- use the following if you ARE using a snapshot version. -->
+        <snapshotRepository>
+            <id>springhispano-addons.googlecode.snapshots</id>
+            <name>springhispano-addons.googlecode.snapshots</name>
+            <url>file:${deploy.directory}/repo/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.3</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <keyname>${gpg.key}</keyname>
+                                    <passphrase>${gpg.password}</passphrase>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

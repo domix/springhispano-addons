@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>springhispano-addons</artifactId>
@@ -12,17 +12,26 @@
     <artifactId>org.springhispano.roo.addon.tdb.pom</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-    
-    <name>SpringHispano.org - Test Data Builder</name>    
-    <url>http://maven.apache.org</url>    
+
+    <name>SpringHispano.org - Test Data Builder</name>
+    <url>http://maven.apache.org</url>
     <description>
         Test Data Builder Addon
     </description>
-    
+
+    <developers>
+        <developer>
+            <id>abadon.gutierrez</id>
+            <name>Rafael Guti&eacute;rrez</name>
+            <url>http://abaddon-gtz.blogspot.com/</url>
+        </developer>
+    </developers>
+
     <modules>
         <module>addon</module>
         <module>annotations</module>
     </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
