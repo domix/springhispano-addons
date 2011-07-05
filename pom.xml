@@ -15,8 +15,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <roo.version>1.1.4.RELEASE</roo.version>
         <junit.version>4.8.1</junit.version>
-        <addon.tdb.version>0.5-SNAPSHOT</addon.tdb.version>
         <addon.auditablefields.version>0.5-SNAPSHOT</addon.auditablefields.version>
+        <deploy.directory>${basedir}/target/deploy</deploy.directory>
     </properties>
 
     <repositories>
@@ -87,6 +87,21 @@
         <module>support</module>
     </modules>
 
+    <distributionManagement>
+        <!-- use the following if you're not using a snapshot version. -->
+        <repository>
+            <id>springhispano-addons.googlecode.releases</id>
+            <name>springhispano-addons.googlecode.releases</name>
+            <url>file:${deploy.directory}/repo/releases</url>
+        </repository>
+        <!-- use the following if you ARE using a snapshot version. -->
+        <snapshotRepository>
+            <id>springhispano-addons.googlecode.snapshots</id>
+            <name>springhispano-addons.googlecode.snapshots</name>
+            <url>file:${deploy.directory}/repo/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -100,4 +115,38 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.3</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <keyname>${gpg.key}</keyname>
+                                    <passphrase>${gpg.password}</passphrase>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

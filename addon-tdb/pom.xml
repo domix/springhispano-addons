@@ -33,6 +33,8 @@
     </modules>
 
     <properties>
+        <addon.tdb.version>0.5.0.RELEASE</addon.tdb.version>
+        <addon.tdb.annotations.version>0.5.0.RELEASE</addon.tdb.annotations.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>

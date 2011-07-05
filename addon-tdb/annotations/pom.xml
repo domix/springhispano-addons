@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.springhispano.roo.addon</groupId>
     <artifactId>org.springhispano.roo.addon.tdb.annotations</artifactId>
-    <version>${addon.tdb.version}</version>
+    <version>${addon.tdb.annotations.version}</version>
     <packaging>jar</packaging>
     <name>SpringHispano.org - Test Data Builder Annotations</name>
     <url>http://maven.apache.org</url>
