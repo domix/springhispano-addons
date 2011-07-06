@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>SpringHispano.org Addons</name>
-    <url>http://www.springhispano.org</url>
+    <url>http://code.google.com/p/springhispano-addons/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

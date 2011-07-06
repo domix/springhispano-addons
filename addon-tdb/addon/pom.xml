@@ -12,10 +12,8 @@
     <packaging>bundle</packaging>
     <version>${addon.tdb.version}</version>
     <name>SpringHispano.org - Test Data Builder Addon</name>
-    <description>
-        Addon de Spring Roo para generar una clase que aplique el patron Test Data Builer
-        Spring Roo addon to generate a class that applies the pattern Test Data Builder
-    </description>
+    <url>http://code.google.com/p/springhispano-addons/wiki/TestDataBuilderAddon</url>
+    <description>Spring Roo addon to generate a class that applies the pattern Test Data Builder. Addon de Spring Roo para generar una clase que aplique el patron Test Data Builer</description>
 
     <dependencies>
         <!-- OSGi -->

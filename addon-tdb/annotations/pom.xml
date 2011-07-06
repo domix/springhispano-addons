@@ -13,7 +13,7 @@
     <version>${addon.tdb.annotations.version}</version>
     <packaging>jar</packaging>
     <name>SpringHispano.org - Test Data Builder Annotations</name>
-    <url>http://maven.apache.org</url>
+    <url>http://code.google.com/p/springhispano-addons/wiki/TestDataBuilderAddon</url>
     <description>
         Test Data Builder Annotations
     </description>

@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Builder de default values para campos.
+ * Builder de default values para los atributos.
  *
  * La gran mayoria del codigo siguiente es una copia de la logica en el codigo de Addon
  * de Data On Demand ya que este entre todo lo demas que hace es crear valores default
