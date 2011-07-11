@@ -18,12 +18,22 @@
     <description>
         Auditable Fields Addon
     </description>
+
+    <developers>
+        <developer>
+            <id>abadon.gutierrez</id>
+            <name>Rafael Guti&eacute;rrez</name>
+            <url>http://abaddon-gtz.blogspot.com/</url>
+        </developer>
+    </developers>
     
     <modules>
         <module>addon</module>
         <module>annotations</module>
     </modules>
+
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <addon.tdb.version>0.5.0.RELEASE</addon.tdb.version>
+        <addon.tdb.annotations.version>1.0.0.RELEASE</addon.tdb.annotations.version>        
     </properties>
 </project>
